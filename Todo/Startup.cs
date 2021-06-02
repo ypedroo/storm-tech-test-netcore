@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Todo.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace Todo
 {
@@ -37,19 +33,28 @@ namespace Todo
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlite(
                     Configuration.GetConnectionString("DefaultConnection")));
-            services.AddDefaultIdentity<IdentityUser>()
+
+            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddControllers();
+
+            services.AddAuthorization(options =>
+            {
+                options.FallbackPolicy = new AuthorizationPolicyBuilder()
+                    .RequireAuthenticatedUser()
+                    .Build();
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseRouting();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
             }
             else
             {
@@ -62,12 +67,12 @@ namespace Todo
             app.UseCookiePolicy();
 
             app.UseAuthentication();
+            app.UseAuthorization();
 
-            app.UseMvc(routes =>
+            app.UseEndpoints(endpoints =>
             {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapDefaultControllerRoute();
+                endpoints.MapRazorPages();
             });
         }
     }

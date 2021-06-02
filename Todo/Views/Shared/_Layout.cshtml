@@ -29,20 +29,6 @@
             <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">Todo Lists</a>
         </div>
         <div class="navbar-collapse collapse">
-            @*<ul class="nav navbar-nav">
-                $1$<li>
-                    <a asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                </li>
-                <li>
-                    <a asp-area="" asp-controller="Home" asp-action="About">About</a>
-                </li>
-                <li>
-                    <a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a>
-                </li>
-                <li>
-                    <a asp-area="" asp-controller="TodoList" asp-action="Index">Todo Lists</a>
-                </li>#1#
-            </ul>*@
             <partial name="_LoginPartial"/>
         </div>
     </div>
@@ -58,7 +44,7 @@
 
     <hr/>
     <footer>
-        <p>&copy; 2018 - Storm ID Ltd.</p>
+        <p>&copy; @DateTime.UtcNow.Year - Storm Ideas</p>
     </footer>
 </div>
 
