@@ -1,6 +1,6 @@
 # Storm Technical Test – A Todo-List Project
 
-This is a todo-list webapp written in C# using [.NET Core 2.1](https://get.asp.net).
+This is a todo-list webapp written in C# using [.NET 5.0](https://get.asp.net).
 
 Show us what you've got by knocking it into shape!
 
