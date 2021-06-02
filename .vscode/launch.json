@@ -10,7 +10,7 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/Todo/bin/Debug/netcoreapp2.1/Todo.dll",
+            "program": "${workspaceFolder}/Todo/bin/Debug/net5.0/Todo.dll",
             "args": [],
             "cwd": "${workspaceFolder}/Todo",
             "stopAtEntry": false,
