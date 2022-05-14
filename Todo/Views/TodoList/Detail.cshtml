@@ -10,7 +10,8 @@
 <h2>@ViewData["Title"]</h2>
 
 <div class="col-md-6">
-
+    <input id="hide_checkbox" type="checkbox" name="Hide done items" value="">
+    <label for="hide_checkbox">Hide done items</label>
     <ul class="list-group">
 
         <li class="list-group-item">
@@ -35,35 +36,49 @@
                     break;
             }
 
-            <li class="list-group-item @contextualClass">
-                
+            <li class="list-group-item @contextualClass IsDone_@item.IsDone">
                 <div class="row">
 
-                <div class="col-md-8">
-                    <a asp-action="Edit" asp-controller="TodoItem" asp-route-todoItemId="@item.TodoItemId">
+                    <div class="col-md-8">
+                        <a asp-action="Edit" asp-controller="TodoItem" asp-route-todoItemId="@item.TodoItemId">
+                            @if (item.IsDone)
+                            {
+                                <s>@item.Title</s>
+                            }
+                            else
+                            {
+                                <text>@item.Title</text>
+                            }
+                        </a>
+                    </div>
 
-                        @if (item.IsDone)
-                        {
-                            <s>@item.Title</s>
-                        }
-                        else
-                        {
-                            <text>@item.Title</text>
-                        }
-                    </a>
-                </div>
+                    <div class="col-md-4 text-right">
+                        <small>
+                            @item.ResponsibleParty.UserName
 
-                <div class="col-md-4 text-right">
-                    <small>
-                        @item.ResponsibleParty.UserName
+                            <img src="https://www.gravatar.com/avatar/@Gravatar.GetHash(item.ResponsibleParty.Email)?s=30"/>
 
-                        <img src="https://www.gravatar.com/avatar/@Gravatar.GetHash(item.ResponsibleParty.Email)?s=30"/>
-
-                    </small>
-                </div>
+                        </small>
+                    </div>
                 </div>
 
             </li>
         }
     </ul>
 </div>
+
+@section Scripts
+{
+    <script type="text/javascript">
+        let hide = true;
+        $("#hide_checkbox").click(function () {
+            if (hide === true) {
+                $(".IsDone_True").hide();
+                hide = false;
+            } else {
+                $(".IsDone_True").show();
+                hide = true;
+            }
+        });
+    </script>
+}

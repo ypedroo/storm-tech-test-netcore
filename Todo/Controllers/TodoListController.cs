@@ -35,7 +35,7 @@ namespace Todo.Controllers
         {
             var todoList = dbContext.SingleTodoList(todoListId);
             var viewmodel = TodoListDetailViewmodelFactory.Create(todoList);
-            return View(viewmodel);
+                return View(viewmodel);
         }
 
         [HttpGet]
