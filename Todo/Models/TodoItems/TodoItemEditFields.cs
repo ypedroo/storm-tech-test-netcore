@@ -1,4 +1,5 @@
-﻿using Todo.Data.Entities;
+﻿using System.ComponentModel.DataAnnotations;
+using Todo.Data.Entities;
 
 namespace Todo.Models.TodoItems
 {
@@ -9,12 +10,15 @@ namespace Todo.Models.TodoItems
         public string TodoListTitle { get; set; }
         public int TodoItemId { get; set; }
         public bool IsDone { get; set; }
-        public string ResponsiblePartyId { get; set; }
+        [Display(Name = "Owner")] public string ResponsiblePartyId { get; set; }
         public Importance Importance { get; set; }
 
-        public TodoItemEditFields() { }
+        public TodoItemEditFields()
+        {
+        }
 
-        public TodoItemEditFields(int todoListId, string todoListTitle, int todoItemId, string title, bool isDone, string responsiblePartyId, Importance importance)
+        public TodoItemEditFields(int todoListId, string todoListTitle, int todoItemId, string title, bool isDone,
+            string responsiblePartyId, Importance importance)
         {
             TodoListId = todoListId;
             TodoListTitle = todoListTitle;
