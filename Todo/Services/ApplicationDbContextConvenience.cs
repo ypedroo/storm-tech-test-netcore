@@ -16,10 +16,13 @@ namespace Todo.Services
 
         public static TodoList SingleTodoList(this ApplicationDbContext dbContext, int todoListId)
         {
-            return dbContext.TodoLists.Include(tl => tl.Owner)
+            var list =  dbContext.TodoLists.Include(tl => tl.Owner)
                 .Include(tl => tl.Items)
                 .ThenInclude(ti => ti.ResponsibleParty)
                 .Single(tl => tl.TodoListId == todoListId);
+            list.Items = list.Items.OrderBy(i => i.Importance).ToList();
+
+            return list;
         }
 
         public static TodoItem SingleTodoItem(this ApplicationDbContext dbContext, int todoItemId)
