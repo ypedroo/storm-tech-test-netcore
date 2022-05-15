@@ -2,6 +2,7 @@
 @using Todo.Data.Entities
 @using Todo.Services
 @model Todo.Models.TodoLists.TodoListDetailViewmodel
+@inject GravatarApiClient GravatarApiClient
 
 @{
     ViewData["Title"] = $"List: {Model.Title}";
@@ -17,7 +18,7 @@
         @Html.Label("order-by-dropdown", "Order by: ")
         <a asp-action="Detail" asp-controller="TodoList" asp-route-todoListId="@Model.TodoListId" asp-route-orderByRank="true">
             <strong>Rank</strong>
-        </a>  
+        </a>
         <a asp-action="Detail" asp-controller="TodoList" asp-route-todoListId="@Model.TodoListId" asp-route-orderByRank="false">
             <strong>,Importance</strong>
         </a>
@@ -65,9 +66,15 @@
 
                     <div class="col-md-4 text-right">
                         <small>
-                            @item.ResponsibleParty.UserName
+                            @{
+                                var (name, avatarUrl) = await GravatarApiClient.GetProfile(item.ResponsibleParty.UserName);
+                            }
 
-                            <img src="https://www.gravatar.com/avatar/@Gravatar.GetHash(item.ResponsibleParty.Email)?s=30"/>
+                            @item.ResponsibleParty.UserName 
+                            <br/>
+                            @name
+
+                            <img src="@avatarUrl?s=30" alt="user profile avatar"/>
 
                         </small>
                     </div>
@@ -76,6 +83,8 @@
             </li>
         }
     </ul>
+</div>
+
 @section Scripts
 {
     <script type="text/javascript">
