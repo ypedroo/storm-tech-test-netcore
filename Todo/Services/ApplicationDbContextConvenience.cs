@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Todo.Data;
 using Todo.Data.Entities;
@@ -9,17 +10,26 @@ namespace Todo.Services
     {
         public static IQueryable<TodoList> RelevantTodoLists(this ApplicationDbContext dbContext, string userId)
         {
-            return dbContext.TodoLists.Include(tl => tl.Owner)
+            var userTodoLists = dbContext.TodoLists.Include(tl => tl.Owner)
                 .Include(tl => tl.Items)
-                .Where(tl => tl.Owner.Id == userId);
+                .ThenInclude(ti => ti.ResponsibleParty)
+                .Where(tl => tl.Owner.Id == userId || tl.Items.Any(ti => ti.ResponsibleParty.Id == userId));
+
+            return userTodoLists;
         }
 
-        public static TodoList SingleTodoList(this ApplicationDbContext dbContext, int todoListId)
+        public static TodoList SingleTodoList(this ApplicationDbContext dbContext, int todoListId,
+            bool orderByRank)
         {
-            return dbContext.TodoLists.Include(tl => tl.Owner)
+            var list = dbContext.TodoLists.Include(tl => tl.Owner)
                 .Include(tl => tl.Items)
                 .ThenInclude(ti => ti.ResponsibleParty)
                 .Single(tl => tl.TodoListId == todoListId);
+            list.Items = orderByRank
+                ? list.Items.OrderBy(i => i.Rank).ToList()
+                : list.Items.OrderBy(i => i.Importance).ToList();
+
+            return list;
         }
 
         public static TodoItem SingleTodoItem(this ApplicationDbContext dbContext, int todoItemId)
