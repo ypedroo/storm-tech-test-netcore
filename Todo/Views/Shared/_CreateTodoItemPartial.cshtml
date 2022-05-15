@@ -1,0 +1,51 @@
+@using Todo.Data
+@model Todo.Models.TodoItems.TodoItemCreateFields
+@using Todo.Views.TodoItem
+@inject ApplicationDbContext DbContext
+
+<div class="modal fade" id="createTodoItemModal" tabindex="-1" role="dialog" aria-labelledby="createTodoItemModal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <form name="create-todo-item" onsubmit="return createTodoItem(@Model.TodoListId, '@Model.TodoListTitle')">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="createTodoItemModalLabel">Add new task on @Model.TodoListTitle</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="form-group">
+                        <label asp-for="Title"></label>
+                        <input asp-for="Title" class="form-control"/>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Importance"></label>
+                        @Html.DropDownListFor(
+                            m => m.Importance,
+                            SelectListConvenience.ImportanceSelectListItems,
+                            new {@class = "form-control"})
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Rank"></label>
+                        <input asp-for="Rank" class="form-control"/>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="ResponsiblePartyId"></label>
+                        @Html.DropDownListFor(
+                            m => m.ResponsiblePartyId,
+                            DbContext.UserSelectListItems(),
+                            new {@class = "form-control"})
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <input type="submit" class="btn btn-primary" name="Save" value="Save"/>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

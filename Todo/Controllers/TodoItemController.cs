@@ -1,6 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Todo.Data;
 using Todo.Data.Entities;
 using Todo.EntityModelMappers.TodoItems;
@@ -19,22 +21,10 @@ namespace Todo.Controllers
             this.dbContext = dbContext;
         }
 
-        [HttpGet]
-        public IActionResult Create(int todoListId, bool orderByRank)
-        {
-            var todoList = dbContext.SingleTodoList(todoListId, orderByRank);
-            var fields = TodoItemCreateFieldsFactory.Create(todoList, User.Id());
-            return View(fields);
-        }
-
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(TodoItemCreateFields fields)
         {
-            if (!ModelState.IsValid)
-            {
-                return View(fields);
-            }
+            if (!ModelState.IsValid) return GetModelStateErrorMessage();
 
             var item = new TodoItem(fields.TodoListId, fields.ResponsiblePartyId, fields.Title, fields.Importance, fields.Rank);
 
@@ -43,7 +33,6 @@ namespace Todo.Controllers
 
             return RedirectToListDetail(fields.TodoListId);
         }
-
 
         [HttpGet]
         public IActionResult Edit(int todoItemId)
@@ -71,6 +60,17 @@ namespace Todo.Controllers
 
             return RedirectToListDetail(todoItem.TodoListId);
         }
+
+        
+        private IActionResult GetModelStateErrorMessage()
+        {
+            var errorMessages = ModelState.Values
+                .Where(v => v.ValidationState == ModelValidationState.Invalid)
+                .SelectMany(v => v.Errors.Select(e => e.ErrorMessage));
+
+            return BadRequest(errorMessages);
+        }
+        
         private RedirectToActionResult RedirectToListDetail(int fieldsTodoListId)
         {
             return RedirectToAction("Detail", "TodoList", new {todoListId = fieldsTodoListId});

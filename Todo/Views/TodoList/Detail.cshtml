@@ -1,12 +1,14 @@
-﻿@using Todo.Controllers
-@using Todo.Data.Entities
+﻿@using Todo.Data.Entities
+@using Todo.Models.TodoItems
 @using Todo.Services
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model Todo.Models.TodoLists.TodoListDetailViewmodel
 @inject GravatarApiClient GravatarApiClient
 
 @{
     ViewData["Title"] = $"List: {Model.Title}";
 }
+<partial name="_CreateTodoItemPartial" model="new TodoItemCreateFields(Model.TodoListId, Model.Title, User.Id())"/>
 
 <h2>@ViewData["Title"]</h2>
 
@@ -14,7 +16,7 @@
     <input id="hide_checkbox" type="checkbox" name="Hide done items" value="">
     <label for="hide_checkbox">Hide done items</label>
     <div>
-        @Html.HiddenFor(m => m.TodoListId)
+        @* @Html.HiddenFor(m => m.TodoListId) *@
         @Html.Label("order-by-dropdown", "Order by: ")
         <a asp-action="Detail" asp-controller="TodoList" asp-route-todoListId="@Model.TodoListId" asp-route-orderByRank="true">
             <strong>Rank</strong>
@@ -27,9 +29,9 @@
     <ul class="list-group">
 
         <li class="list-group-item">
-            <a asp-action="Create" asp-controller="TodoItem" asp-route-todoListId="@Model.TodoListId">
+            <button type="button" class="btn btn-primary" id="add-new-item" data-toggle="modal" data-target="#createTodoItemModal">
                 <strong>Add New Item</strong>
-            </a>
+            </button>
         </li>
 
         @foreach (var item in Model.Items)
@@ -70,7 +72,7 @@
                                 var (name, avatarUrl) = await GravatarApiClient.GetProfile(item.ResponsibleParty.UserName);
                             }
 
-                            @item.ResponsibleParty.UserName 
+                            @item.ResponsibleParty.UserName
                             <br/>
                             @name
 
@@ -99,4 +101,6 @@
             }
         });
     </script>
+    
+    <script src="~/js/endpoints.js" asp-append-version="true"></script>
 }
