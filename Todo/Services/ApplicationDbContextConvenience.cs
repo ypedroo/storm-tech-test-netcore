@@ -18,13 +18,16 @@ namespace Todo.Services
             return userTodoLists;
         }
 
-        public static TodoList SingleTodoList(this ApplicationDbContext dbContext, int todoListId)
+        public static TodoList SingleTodoList(this ApplicationDbContext dbContext, int todoListId,
+            bool orderByRank)
         {
             var list = dbContext.TodoLists.Include(tl => tl.Owner)
                 .Include(tl => tl.Items)
                 .ThenInclude(ti => ti.ResponsibleParty)
                 .Single(tl => tl.TodoListId == todoListId);
-            list.Items = list.Items.OrderBy(i => i.Importance).ToList();
+            list.Items = orderByRank
+                ? list.Items.OrderBy(i => i.Rank).ToList()
+                : list.Items.OrderBy(i => i.Importance).ToList();
 
             return list;
         }

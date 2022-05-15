@@ -12,6 +12,17 @@
 <div class="col-md-6">
     <input id="hide_checkbox" type="checkbox" name="Hide done items" value="">
     <label for="hide_checkbox">Hide done items</label>
+    <div>
+        @Html.HiddenFor(m => m.TodoListId)
+        @Html.Label("order-by-dropdown", "Order by: ")
+        <a asp-action="Detail" asp-controller="TodoList" asp-route-todoListId="@Model.TodoListId" asp-route-orderByRank="true">
+            <strong>Rank</strong>
+        </a>  
+        <a asp-action="Detail" asp-controller="TodoList" asp-route-todoListId="@Model.TodoListId" asp-route-orderByRank="false">
+            <strong>,Importance</strong>
+        </a>
+
+    </div>
     <ul class="list-group">
 
         <li class="list-group-item">
@@ -65,8 +76,6 @@
             </li>
         }
     </ul>
-</div>
-
 @section Scripts
 {
     <script type="text/javascript">

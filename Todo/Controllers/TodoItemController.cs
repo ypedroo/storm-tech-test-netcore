@@ -20,9 +20,9 @@ namespace Todo.Controllers
         }
 
         [HttpGet]
-        public IActionResult Create(int todoListId)
+        public IActionResult Create(int todoListId, bool orderByRank)
         {
-            var todoList = dbContext.SingleTodoList(todoListId);
+            var todoList = dbContext.SingleTodoList(todoListId, orderByRank);
             var fields = TodoItemCreateFieldsFactory.Create(todoList, User.Id());
             return View(fields);
         }
@@ -36,7 +36,7 @@ namespace Todo.Controllers
                 return View(fields);
             }
 
-            var item = new TodoItem(fields.TodoListId, fields.ResponsiblePartyId, fields.Title, fields.Importance);
+            var item = new TodoItem(fields.TodoListId, fields.ResponsiblePartyId, fields.Title, fields.Importance, fields.Rank);
 
             await dbContext.AddAsync(item);
             await dbContext.SaveChangesAsync();
